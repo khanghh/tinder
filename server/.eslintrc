@@ -1,0 +1,26 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": false,
+    "ecmaFeatures": {
+      "globalReturn": true
+    }
+  },
+  "plugins": ["prettier"],
+  "extends": [
+    "prettier",
+    "plugin:prettier/recommended",
+    "recommended/node"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-console": "error",
+    "no-undef": "error"
+  }
+}
