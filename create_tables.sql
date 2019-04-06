@@ -17,6 +17,20 @@ CREATE TABLE IF NOT EXISTS `test_db`.`user` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+create table if not exists `test_db`.`images` (
+	`id` int not null AUTO_INCREMENT,
+    `user_id` int,
+    `path_image` VARCHAR(50) NULL,
+    `created_at` DATETIME default current_timestamp,
+	`updated_at` DATETIME NULL,
+	PRIMARY KEY (`id`),
+    CONSTRAINT `fk_user_id_conversation`
+		FOREIGN KEY (`user_id`)
+		REFERENCES `test_db`.`user` (`id`)
+		ON DELETE CASCADE
+		ON UPDATE NO ACTION
+);
+
 CREATE TABLE IF NOT EXISTS `test_db`.`conversation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `creator_id` INT NOT NULL,
