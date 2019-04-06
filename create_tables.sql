@@ -14,35 +14,22 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `test_db`.`conversation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `creator_id` INT NOT NULL,
+  `member_id` INT NOT NULL,
   `created_at` DATETIME default current_timestamp,
   `updated_at` DATETIME NULL,
   `deleted_at` DATETIME NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_user_id_idx` (`creator_id` ASC) VISIBLE,
-  CONSTRAINT `fk_user_id_conversation`
+  CONSTRAINT `fk_creator_id_conversation`
     FOREIGN KEY (`creator_id`)
     REFERENCES `test_db`.`user` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION);
-    
-CREATE TABLE IF NOT EXISTS `test_db`.`participants` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `conversation_id` INT NOT NULL,
-  `user_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_user_id_idx` (`user_id` ASC) VISIBLE,
-  INDEX `fk_conversation_id_idx` (`conversation_id` ASC) VISIBLE,
-CONSTRAINT `fk_user_id_participants`
-    FOREIGN KEY (`user_id`)
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_member_id_conversation`
+    FOREIGN KEY (`member_id`)
     REFERENCES `test_db`.`user` (`id`)
     ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-CONSTRAINT `fk_conversation_id_participants`
-    FOREIGN KEY (`conversation_id`)
-    REFERENCES `test_db`.`conversation` (`id`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION
-);
+    ON UPDATE NO ACTION);
 
 CREATE TABLE IF NOT EXISTS `test_db`.`messages` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -140,7 +127,26 @@ PARTITION BY RANGE(liker_user_id) PARTITIONS 10
 	PARTITION part8 VALUES LESS THAN (900),  
 	PARTITION part9 VALUES LESS THAN (1000));
   
-  
+-- trigger when insert new row in user_likes,so create new convertion if they are matched
+DELIMITER //
+CREATE TRIGGER `user_likes_AFTER_INSERT` AFTER INSERT ON `user_likes` 
+FOR EACH ROW 
+BEGIN
+	declare is_like int(11);
+    -- check if they are matched or not
+    select count(*) 
+    from `test_db`.`user_likes`
+    where liker_user_id = NEW.liked_user_id and liked_user_id = NEW.liker_user_id
+    into is_like;
+    -- if they are matched
+    if is_like > 0 then
+		-- create new row in conversation
+		insert into `test_db`.`conversation` (creator_id, member_id) values (NEW.liker_user_id, NEW.liked_user_id);
+	end if;
+END
+DELIMITER ;
+
+-- some test SQL query
 select * from user_likes;
 delete from user_likes where id > 0;
 
