@@ -4,9 +4,9 @@
   "description": "Nodejs server for Tinder app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "eslint --ext .js, --ignore-path .gitignore .",
-    "dev": "nodemon --exec babel-node src/app.js"
+    "dev": "nodemon --exec babel-node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,8 +22,13 @@
     "babel-jest": "^24.5.0",
     "babel-loader": "^8.0.5",
     "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "express-fileupload": "^1.1.4",
+    "express-session": "^1.15.6",
     "jest": "^24.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mysql": "^2.16.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {

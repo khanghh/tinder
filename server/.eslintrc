@@ -21,6 +21,7 @@
   "rules": {
     "prettier/prettier": "error",
     "no-console": "error",
-    "no-undef": "error"
+    "no-undef": "error",
+    "import/no-nodejs-modules": "off"
   }
 }
