@@ -5,8 +5,8 @@ class UserRepository {
     this.client = client
   }
 
-  async getUserByUserId(userid, fields = '*') {
-    const query = `SELECT ${fields} FROM user WHERE id=${userid}`
+  async getUserByUserId(user_id, fields = '*') {
+    const query = `select ${fields} from user where id=${user_id}`
     const client = this.client
     const data = await toPromise(cb => {
       client.query(query, cb)
@@ -21,11 +21,6 @@ class UserRepository {
       client.query(query, cb)
     })
     return data
-  }
-
-  async update(info) {
-    const query = 'update'
-    const client = this.client
   }
 }
 

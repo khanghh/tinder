@@ -1,10 +1,11 @@
 import winston from 'winston'
 
 const createLoger = function(objectName) {
-  const myFormat = winston.format.printf(info =>
-    winston.format
-      .colorize()
-      .colorize(info.level, `${info.timestamp} [${objectName}][${info.level.toUpperCase()}]: ${info.message}`)
+  const myFormat = winston.format.printf(
+    info =>
+      winston.format
+        .colorize()
+        .colorize(info.level, `[${info.timestamp}][${objectName}][${info.level.toUpperCase()}]: `) + info.message
   )
 
   return winston.createLogger({
