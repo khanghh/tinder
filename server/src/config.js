@@ -7,6 +7,8 @@ export default {
     password: '123456',
     database: 'test_db'
   },
-  upload_max_size: 1024 * 1024, // bytes
-  uploadDir: path.join(path.dirname(require.main.filename), 'upload')
+  temp_upload_dir: '/tmp/upload',
+  thumbnail_cache_dir: '/tmp/upload',
+  upload_max_size: 50 * 1024 * 1024, // 50 MB
+  uploadDir: path.join(process.cwd(), 'upload')
 }

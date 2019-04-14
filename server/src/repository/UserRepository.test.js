@@ -17,6 +17,7 @@ test('like', async () => {
     client.end()
     return data
   })
+  // eslint-disable-next-line no-console
   console.log(data)
   // expect(user.id).toBe(2)
 })
