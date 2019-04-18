@@ -1,0 +1,198 @@
+body,html {
+  background-image: linear-gradient(to right bottom, #2d1c3a, #331f40, #3a2346, #40264d, #472a53, #532e5a, #5f3160, #6c3566, #813a6c, #963f70, #ab4472, #bf4a73);
+  height: 100%;
+}
+
+.bg-image {
+  background-image: linear-gradient(to right bottom, #2d1c3a, #331f40, #3a2346, #40264d, #472a53, #532e5a, #5f3160, #6c3566, #813a6c, #963f70, #ab4472, #bf4a73);
+  filter: blur(20px);
+  -webkit-filter: blur(20px);
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+}
+
+.tinder{
+  font-family: 'Pacifico', cursive;
+  color: white
+}
+
+.form-signup {
+  font-family: 'Roboto', sans-serif;
+}
+
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+
+  width: 100%;
+  -webkit-box-pack: center;
+  -moz-box-pack: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.text-light {
+  color: #bdc3c7 !important ;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.text-error {
+  color: red !important ;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.form-control,
+.is-focused .form-control {
+  background-image: linear-gradient(0deg,#ecf0f1 2px,rgba(0,150,136,0) 0),
+  linear-gradient(0deg,#7f8c8d, 1px,transparent 0);
+}
+
+.form-control:invalid, .custom-file-control:invalid {
+  background-image: linear-gradient(to top, #d50000 2px, rgba(213, 0, 0, 0) 2px),
+  linear-gradient(to top, #d50000 1px, transparent 1px);
+}
+
+.bmd-label-floating {
+  color: #bdc3c7
+}
+
+.is-focused [class^='bmd-label'],
+.is-focused [class*=' bmd-label'],
+.is-focused [class^='bmd-label'],
+.is-focused [class*=' bmd-label'] {
+  color: #bdc3c7
+}
+
+.form-control {
+  color: #ecf0f1 !important
+}
+
+.form-control:hover {
+  color: #ecf0f1
+}
+
+.bmd-help {
+  color: #bdc3c7 !important;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.input-icon {
+  position: absolute;
+  color: #bdc3c7
+}
+
+.pleft {
+  padding-left: 30px
+}
+
+.pleft {
+  padding-right: 30px
+}
+
+.btn-signup {
+  background: #fff !important;
+  color: #5f3160 !important;
+  height: 4em;
+  border: 1px #fff;
+  border-radius: 20px;
+  box-shadow: none !important;
+}
+
+.btn-signup:active {
+  background: #aaa !important;
+}
+
+input {
+  font-family: 'Quicksand', sans-serif;
+}
+
+input::-webkit-input-placeholder {
+  color: #bdc3c7 !important;
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+  color: #bdc3c7 !important;
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+  color: #bdc3c7 !important;
+}
+
+input:-ms-input-placeholder {
+  color: #bdc3c7 !important;
+}
+
+.checkbox-custom, .radio-custom {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-custom, .checkbox-custom-label, .radio-custom, .radio-custom-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.checkbox-custom-label, .radio-custom-label {
+  position: relative;
+}
+
+.checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
+  content: '';
+  background: transparent;
+  border: 2px solid #ccc;
+  display: inline-block;
+  vertical-align: middle;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.checkbox-custom:checked + .checkbox-custom-label:before {
+  background: #5f3160;
+  box-shadow: inset 0px 0px 0px 4px transparent;
+}
+
+.radio-custom + .radio-custom-label:before {
+  border-radius: 50%;
+}
+
+.radio-custom:checked + .radio-custom-label:before {
+  background: #ccc;
+  box-shadow: inset 0px 0px 0px 4px #5f3160;
+}
+
+.label-gender {
+  width: 35%;
+  float: left;
+  white-space: nowrap;
+}
+
+.input-gender {
+  width: 65%;
+  float: left;
+}
+
+.label-male, .label-female {
+  float: left;
+}
+
+#btn-visible {
+  cursor: pointer;
+}
