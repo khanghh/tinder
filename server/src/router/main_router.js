@@ -66,8 +66,7 @@ export default function(mysqlClient, mailTransporter) {
             if (result && result.insertId) {
               res.redirect('/login')
             } else {
-              res.status(500)
-              res.send({ message: 'Internal server error' })
+              res.status(500).send({ message: 'Internal server error' })
             }
           }
         } else {
@@ -89,8 +88,7 @@ export default function(mysqlClient, mailTransporter) {
           return res.send({ message: 'Account activated.' })
         }
       }
-      res.status(400)
-      res.send({ message: 'Bad request.' })
+      res.status(400).send({ message: 'Bad request.' })
     })
   )
 

@@ -2,12 +2,14 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cache from 'memory-cache'
 import crypto from 'crypto'
+import jwt from 'jsonwebtoken'
 import config from '../config'
 import cryptoUtils from '../utils/cryptoUtils'
 import createLogger from '../utils/createLogger'
 import MailComposer from '../mail/MailComposer'
 import createUserRepo from '../repository/UserRepository'
 import createMessageRepo from '../repository/MessageRepositoy'
+import jwtVerifyMiddleware from '../middleware/jwtVerifyMiddleware'
 
 export default function(mysqlClient, mailTransporter) {
   const logger = createLogger('ApiRouter')
@@ -15,28 +17,14 @@ export default function(mysqlClient, mailTransporter) {
   const messageRepo = createMessageRepo(mysqlClient)
   const router = express.Router()
 
+  const userProperties = ['id', 'name', 'email', 'gender', 'phone', 'description', 'created_at']
+
   const asyncMiddleware = fn => (req, res) => {
-    Promise.resolve(fn(req, res)).catch(err => logger.error(err.message))
+    Promise.resolve(fn(req, res)).catch(err => logger.error(err.message + 'at ' + err.stack))
   }
 
   router.use(bodyParser.json())
   router.use(bodyParser.urlencoded({ extended: false }))
-
-  router.get('/user_info', (req, res) => {
-    res.set('Content-Type', 'application/json')
-    const user_id = req.query.user_id
-    userRepo.getUserByUserId(user_id).then(user => {
-      res.send(JSON.stringify(user))
-    })
-  })
-
-  router.get('/message', (req, res) => {
-    res.set('Content-Type', 'application/json')
-    const conversation_id = req.query.conversation_id
-    messageRepo.getMessages(conversation_id).then(message => {
-      res.send(JSON.stringify(message))
-    })
-  })
 
   router.get('/get_nonce', (req, res) => {
     const nonce = crypto.randomBytes(16).toString('hex')
@@ -51,8 +39,7 @@ export default function(mysqlClient, mailTransporter) {
       res.set('Content-Type', 'application/json')
       const nonce = req.body.nonce
       if (!nonce || nonce != cache.get(`nonce_${req.connection.remoteAddress}`)) {
-        res.status(403)
-        res.send({ message: 'Forbidden.' })
+        res.status(403).send({ message: 'Forbidden.' })
       } else {
         const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
         const name = req.body.name
@@ -63,16 +50,13 @@ export default function(mysqlClient, mailTransporter) {
         if (email) {
           const exist_user = await userRepo.getUserByEmail(email)
           if (exist_user) {
-            res.status(409)
-            res.send({ message: 'This email is already registered.' })
+            res.status(409).send({ message: 'This email is already registered.' })
           } else if (!(gender === 'male' || gender === 'female')) {
-            res.status(400)
-            res.send({ message: 'Please enter a valid gender.' })
+            res.status(400).send({ message: 'Please enter a valid gender.' })
           } else {
             cache.del(`nonce_${req.connection.remoteAddress}`)
             const passwordSalt = crypto.randomBytes(16).toString('hex')
-            const salt_round = 100
-            const hashedPassword = crypto.pbkdf2Sync(password, passwordSalt, salt_round, 16, 'sha256').toString('hex')
+            const hashedPassword = crypto.pbkdf2Sync(password, passwordSalt, 1000, 16, 'sha256').toString('hex')
             const activateToken = cryptoUtils.encrypt(email, config.cryptoKey)
             const mail = await MailComposer.compose_activate_user(
               'Tinder<bf3t02@gmail.com>',
@@ -80,13 +64,12 @@ export default function(mysqlClient, mailTransporter) {
               name,
               activateToken
             )
-            await mailTransporter.sendMail(mail)
             const result = await userRepo.addUser(name, email, hashedPassword, passwordSalt, gender)
             if (result && result.insertId) {
+              await mailTransporter.sendMail(mail)
               res.send({ message: 'Registeration successful. Check your email to activate your account.' })
             } else {
-              res.status(500)
-              res.send({ message: 'Internal server error.' })
+              res.status(500).send({ message: 'Internal server error.' })
             }
           }
         } else {
@@ -95,6 +78,76 @@ export default function(mysqlClient, mailTransporter) {
       }
     })
   )
+
+  router.post(
+    '/login',
+    asyncMiddleware(async (req, res) => {
+      const nonce = req.body.nonce
+      res.set('Content-Type', 'application/json')
+      if (!nonce || nonce != cache.get(`nonce_${req.connection.remoteAddress}`)) {
+        res.status(403).send({ message: 'Forbidden.' })
+      } else {
+        const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+        const email = re_email.test(req.body.email) ? req.body.email : null
+        if (email) {
+          const exist_user = await userRepo.getUserByEmail(email)
+          if (exist_user) {
+            if (exist_user.is_active) {
+              if (!exist_user.is_banned) {
+                const clientPassword = req.body.password
+                const hashedPassword = exist_user.password
+                const passwordSalt = exist_user.password_salt
+                const clientHashedPassword = crypto
+                  .pbkdf2Sync(clientPassword, passwordSalt, 1000, 16, 'sha256')
+                  .toString('hex')
+                if (hashedPassword == clientHashedPassword) {
+                  const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
+                  res.send({ message: 'Login successfully.', authToken: token })
+                } else {
+                  res.send({ message: 'Login failed. Check your email and password and try again.' })
+                }
+              } else {
+                res.status(403).send({
+                  message: `Your account has been temporarily suspended because of ${exist_user.ban_reason}`
+                })
+              }
+            } else {
+              res.status(403).send({ message: 'Check your email to activate your account.' })
+            }
+          } else {
+            res.send({ message: 'Account not found.' })
+          }
+        }
+      }
+    })
+  )
+
+  router.get('/user_info', jwtVerifyMiddleware, (req, res) => {
+    res.set('Content-Type', 'application/json')
+    const re_id = /^\d+$/
+    const user_id = re_id.test(req.query.user_id) ? req.query.user_id : null
+    if (user_id) {
+      userRepo.getUserByUserId(user_id).then(user => {
+        if (user) {
+          const data = {}
+          userProperties.forEach(key => (data[key] = user[key]))
+          res.send(JSON.stringify(data))
+        } else {
+          res.status(404).send({ message: 'User not found.' })
+        }
+      })
+    } else {
+      res.status(400).send({ message: 'Invalid user_id provided.' })
+    }
+  })
+
+  router.get('/message', jwtVerifyMiddleware, (req, res) => {
+    res.set('Content-Type', 'application/json')
+    const conversation_id = req.query.conversation_id
+    messageRepo.getMessages(conversation_id).then(message => {
+      res.send(JSON.stringify(message))
+    })
+  })
 
   return router
 }
