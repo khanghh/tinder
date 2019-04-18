@@ -7,9 +7,9 @@ import quickthumb from 'quickthumb'
 import createLogger from '../utils/createLogger'
 import sharp from 'sharp'
 
-export default function(client) {
+export default function(mysqlClient) {
   // eslint-disable-next-line no-unused-vars
-  const userRepo = createUserRepo(client)
+  const userRepo = createUserRepo(mysqlClient)
   const logger = createLogger('UploadRouter')
   const router = express.Router()
 
@@ -42,7 +42,7 @@ export default function(client) {
   })
 
   const upload_limit = {
-    fileSize: 1 * 1024 * 1024
+    fileSize: config.uploadMaxSize
   }
 
   const upload_filter = (req, file, cb) => {
@@ -69,7 +69,7 @@ export default function(client) {
     { name: 'image5', maxCount: 1 }
   ])
 
-  router.use(quickthumb.static(config.uploadDir, { cacheDir: config.temp_upload_dir }))
+  router.use(quickthumb.static(config.uploadDir, { cacheDir: config.tempUploadDir }))
 
   router.post('/upload_image', (req, res) => {
     upload_single(req, res, async err => {

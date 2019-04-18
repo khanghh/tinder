@@ -1,14 +1,26 @@
-import path from 'path'
-
 export default {
   mysqlOptions: {
-    host: '167.99.69.92',
-    user: 'root',
-    password: '123456',
-    database: 'test_db'
+    connectionLimit: 10,
+    host: process.env.mysqlHost,
+    user: process.env.mysqlUser,
+    password: process.env.mysqlPassword,
+    database: process.env.mysqlDatabase
   },
-  temp_upload_dir: '/tmp/upload',
-  thumbnail_cache_dir: '/tmp/upload',
-  upload_max_size: 50 * 1024 * 1024, // 50 MB
-  uploadDir: path.join(process.cwd(), 'upload')
+  mailerOptions: {
+    pool: true,
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.mailerUser,
+      pass: process.env.mailerPassword
+    }
+  },
+  cryptoKey: process.env.cryptoKey,
+  cryptoSalt: process.env.cryptoSalt,
+  homeUrl: process.env.homeUrl,
+  cookieSecret: 'tinderServer',
+  tempUploadDir: '/tmp/upload',
+  uploadMaxSize: 50 * 1024 * 1024, // 50 MB
+  uploadDir: process.env.uploadDir
 }

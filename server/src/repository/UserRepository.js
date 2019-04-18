@@ -14,8 +14,36 @@ class UserRepository {
     return data[0]
   }
 
+  async getUserByEmail(email, fields = '*') {
+    const query = `select ${fields} from user where email='${email}'`
+    const client = this.client
+    const data = await toPromise(cb => {
+      client.query(query, cb)
+    })
+    return data[0]
+  }
+
   async like(liker_id, liked_id) {
     const query = `insert into user_likes (liker_user_id, liked_user_id) values (${liker_id},${liked_id})`
+    const client = this.client
+    const data = await toPromise(cb => {
+      client.query(query, cb)
+    })
+    return data
+  }
+
+  async addUser(name, email, password, password_salt, gender) {
+    const bitGender = gender === 'male' ? 1 : 0
+    const query = `INSERT INTO user(name, email, password, password_salt, gender, is_active, is_blocked) VALUES ("${name}", "${email}", "${password}", "${password_salt}", ${bitGender}, 0, 0)`
+    const client = this.client
+    const data = await toPromise(cb => {
+      client.query(query, cb)
+    })
+    return data
+  }
+
+  async activateUser(email) {
+    const query = `UPDATE user SET is_active=1 WHERE email="${email}"`
     const client = this.client
     const data = await toPromise(cb => {
       client.query(query, cb)

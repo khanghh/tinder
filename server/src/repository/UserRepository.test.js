@@ -19,5 +19,4 @@ test('like', async () => {
   })
   // eslint-disable-next-line no-console
   console.log(data)
-  // expect(user.id).toBe(2)
 })

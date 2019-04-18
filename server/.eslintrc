@@ -22,6 +22,8 @@
     "prettier/prettier": "error",
     "no-console": "error",
     "no-undef": "error",
-    "import/no-nodejs-modules": "off"
+    "import/no-nodejs-modules": "off",
+    "no-useless-escape": "off",
+    "eqeqeq": "off"
   }
 }

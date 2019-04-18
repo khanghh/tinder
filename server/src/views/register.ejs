@@ -1,17 +1,59 @@
-<% include ./header %>
-<form>
-  <div class="form-group">
-    <label for="email">Email address</label>
-    <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
+<% include header %>
+
+<div class="row justify-content-center" style="width: 100%">
+  <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+      <form class="form-signup" autocomplete="off" method="post" action="register">
+          <h1 class="text-center tinder pb-5">Tinder</h1>
+
+          <div class="form-group">
+            <span class="input-icon pt-1" ><i class="material-icons">person_outlined</i></span>
+            <input type="text" class="form-control pleft" placeholder="Display name" id="inputName" name="name">
+          </div>
+
+          <div class="form-group">
+            <span class="input-icon pt-1" ><i class="material-icons">email</i></span>
+            <input type="email" class="form-control pleft" placeholder="Email address" id="inputEmail" name="email">
+            <span class="bmd-help pt-1">We'll never share your email with anyone else.</span>
+          </div>
+
+          <div class="form-group">
+            <span class="input-icon pt-1"><i class="material-icons">lock</i></span>
+            <span class="input-icon pt-1" style="right: 0"><i id="btn-visible" class="material-icons">visibility</i></span>
+            <input type="password" class="form-control pleft pright" placeholder="Password" id="inputPassword" name="password">
+          </div>
+
+          <div class="form-group bmd-form-group pt-3">
+            <div class="text-light pr-5 label-gender">I am:</div>
+            <div class="input-gender">
+                <input type="radio" class="radio-custom" id="inputGenderMale" value="male" name="gender" checked>
+                <label for="inputGenderMale"class="text-light radio-custom-label pr-4 label-male">Male</label>
+                <input type="radio" class="radio-custom" id="inputGenderFemale" value="female" name="gender">
+                <label for="inputGenderFemale"class="text-light radio-custom-label label-female">Female</label>
+            </div>
+            <div style="clear: both"></div>
+          </div>
+          <% if (error) { %>
+            <div class="alert text-error p-0 m-0" role="alert">
+              <% if (error == 1) { %>
+                Something went wrong. Please try again!
+              <% } %>
+              <% if (error == 2) { %>
+                This email is already registered
+              <% } %>
+              <% if (error == 3) { %>
+                Please enter a valid gender
+              <% } %>
+              <% if (error == 4) { %>
+                Please enter a valid email address
+              <% } %>
+            </div>
+          <% } %>
+            <div class="form-group text-center pt-3">
+            <input type="hidden" value="<%= nonce %>" name="nonce">
+            <button type="submit" class="btn btn-signup btn-raised btn-block">Sign Up</button>
+          </div>
+        </form>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="Password">
-  </div>
-  <div class="form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1">Check me out</label>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-<% include ./footer %>
+</div>
+
+<% include footer %>
