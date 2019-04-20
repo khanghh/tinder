@@ -1,7 +1,6 @@
 import express from 'express'
 import mysql from 'mysql'
 import path from 'path'
-import bodyParser from 'body-parser'
 import nodemailer from 'nodemailer'
 import cookieSession from 'cookie-session'
 

@@ -20,6 +20,8 @@ export default {
   cryptoSalt: process.env.cryptoSalt,
   homeUrl: process.env.homeUrl,
   cookieSecret: 'tinderServer',
+  jwtSecret: process.env.jwtSecret,
+  jwtMaxAge: '30 days',
   tempUploadDir: '/tmp/upload',
   uploadMaxSize: 50 * 1024 * 1024, // 50 MB
   uploadDir: process.env.uploadDir

@@ -34,7 +34,7 @@ class UserRepository {
 
   async addUser(name, email, password, password_salt, gender) {
     const bitGender = gender === 'male' ? 1 : 0
-    const query = `INSERT INTO user(name, email, password, password_salt, gender, is_active, is_blocked) VALUES ("${name}", "${email}", "${password}", "${password_salt}", ${bitGender}, 0, 0)`
+    const query = `INSERT INTO user(name, email, password, password_salt, gender, is_active, is_banned) VALUES ("${name}", "${email}", "${password}", "${password_salt}", ${bitGender}, 0, 0)`
     const client = this.client
     const data = await toPromise(cb => {
       client.query(query, cb)

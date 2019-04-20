@@ -3,9 +3,10 @@ import createUserRepo from '../repository/UserRepository'
 import config from '../config'
 import path from 'path'
 import multer from 'multer'
+import sharp from 'sharp'
 import quickthumb from 'quickthumb'
 import createLogger from '../utils/createLogger'
-import sharp from 'sharp'
+import jwtVerifyMiddleware from '../middleware/jwtVerifyMiddleware'
 
 export default function(mysqlClient) {
   // eslint-disable-next-line no-unused-vars
@@ -71,7 +72,7 @@ export default function(mysqlClient) {
 
   router.use(quickthumb.static(config.uploadDir, { cacheDir: config.tempUploadDir }))
 
-  router.post('/upload_image', (req, res) => {
+  router.post('/upload_image', jwtVerifyMiddleware, (req, res) => {
     upload_single(req, res, async err => {
       if (err instanceof multer.MulterError) {
         res.setHeader('Content-Type', 'application/json')
@@ -94,14 +95,13 @@ export default function(mysqlClient) {
           const result = await saveImage(image, width, height, `${user_id}_image${num}.jpg`)
           res.send(result)
         } else {
-          res.status(400)
-          res.send({ message: 'num must be between 1 and 5' })
+          res.status(400).send({ message: 'num must be between 1 and 5' })
         }
       }
     })
   })
 
-  router.post('/upload_images', async (req, res) => {
+  router.post('/upload_images', jwtVerifyMiddleware, (req, res) => {
     upload_multiple(req, res, async err => {
       if (err instanceof multer.MulterError) {
         res.setHeader('Content-Type', 'application/json')
@@ -112,8 +112,7 @@ export default function(mysqlClient) {
         }
         return res.send({ message: err.message })
       } else if (err) {
-        res.sendStatus(500)
-        res.send(err)
+        res.sendStatus(500).send(err)
       } else {
         const userid = 1
         const width = 400
