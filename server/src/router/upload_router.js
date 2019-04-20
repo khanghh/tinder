@@ -114,7 +114,7 @@ export default function(mysqlClient) {
       } else if (err) {
         res.sendStatus(500).send(err)
       } else {
-        const userid = 1
+        const userid = req.user_id
         const width = 400
         const height = 400
         const image1 = req.files.image1 ? req.files.image1[0] : null

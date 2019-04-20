@@ -17,7 +17,7 @@ export default function(mysqlClient, mailTransporter) {
   const messageRepo = createMessageRepo(mysqlClient)
   const router = express.Router()
 
-  const userProperties = ['id', 'name', 'email', 'gender', 'phone', 'description', 'created_at']
+  const userProperties = ['id', 'name', 'gender', 'description', 'created_at']
 
   const asyncMiddleware = fn => (req, res) => {
     Promise.resolve(fn(req, res)).catch(err => logger.error(err.message + 'at ' + err.stack))
@@ -46,6 +46,7 @@ export default function(mysqlClient, mailTransporter) {
         const email = re_email.test(req.body.email) ? req.body.email : null
         const password = req.body.password
         const gender = req.body.gender
+        const age = parseInt(req.body.age, -1)
 
         if (email) {
           const exist_user = await userRepo.getUserByEmail(email)
@@ -53,6 +54,8 @@ export default function(mysqlClient, mailTransporter) {
             res.status(409).send({ message: 'This email is already registered.' })
           } else if (!(gender === 'male' || gender === 'female')) {
             res.status(400).send({ message: 'Please enter a valid gender.' })
+          } else if (age < 1 || age > 100) {
+            res.status(400).send({ message: 'Please enter a valid age.' })
           } else {
             cache.del(`nonce_${req.connection.remoteAddress}`)
             const passwordSalt = crypto.randomBytes(16).toString('hex')
@@ -64,7 +67,7 @@ export default function(mysqlClient, mailTransporter) {
               name,
               activateToken
             )
-            const result = await userRepo.addUser(name, email, hashedPassword, passwordSalt, gender)
+            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender)
             if (result && result.insertId) {
               await mailTransporter.sendMail(mail)
               res.send({ message: 'Registeration successful. Check your email to activate your account.' })
@@ -73,7 +76,7 @@ export default function(mysqlClient, mailTransporter) {
             }
           }
         } else {
-          res.send({ message: 'Please enter a valid email address.' })
+          res.status(400).send({ message: 'Please enter a valid email address.' })
         }
       }
     })
@@ -95,8 +98,9 @@ export default function(mysqlClient, mailTransporter) {
             if (exist_user.is_active) {
               if (!exist_user.is_banned) {
                 const clientPassword = req.body.password
-                const hashedPassword = exist_user.password
-                const passwordSalt = exist_user.password_salt
+                const password = exist_user.password.split('.')
+                const hashedPassword = password[0]
+                const passwordSalt = password[1]
                 const clientHashedPassword = crypto
                   .pbkdf2Sync(clientPassword, passwordSalt, 1000, 16, 'sha256')
                   .toString('hex')
@@ -115,7 +119,7 @@ export default function(mysqlClient, mailTransporter) {
               res.status(403).send({ message: 'Check your email to activate your account.' })
             }
           } else {
-            res.send({ message: 'Account not found.' })
+            res.status(404).send({ message: 'Account not found.' })
           }
         }
       }

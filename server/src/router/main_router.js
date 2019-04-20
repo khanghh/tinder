@@ -62,7 +62,7 @@ export default function(mysqlClient, mailTransporter) {
               activateToken
             )
             await mailTransporter.sendMail(mail)
-            const result = await userRepo.addUser(name, email, hashedPassword, passwordSalt, gender)
+            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender)
             if (result && result.insertId) {
               res.redirect('/login')
             } else {
