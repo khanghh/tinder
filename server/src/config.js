@@ -24,5 +24,6 @@ export default {
   jwtMaxAge: '30 days',
   tempUploadDir: '/tmp/upload',
   uploadMaxSize: 50 * 1024 * 1024, // 50 MB
-  uploadDir: process.env.uploadDir
+  uploadDir: process.env.uploadDir,
+  socketPort: 8888
 }

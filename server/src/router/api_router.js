@@ -17,7 +17,7 @@ export default function(mysqlClient, mailTransporter) {
   const messageRepo = createMessageRepo(mysqlClient)
   const router = express.Router()
 
-  const userProperties = ['id', 'name', 'gender', 'description', 'created_at']
+  const userProperties = ['id', 'name', 'email', 'phone', 'gender', 'age', 'description']
 
   const asyncMiddleware = fn => (req, res) => {
     Promise.resolve(fn(req, res)).catch(err => logger.error(err.message + 'at ' + err.stack))
@@ -46,7 +46,7 @@ export default function(mysqlClient, mailTransporter) {
         const email = re_email.test(req.body.email) ? req.body.email : null
         const password = req.body.password
         const gender = req.body.gender
-        const age = parseInt(req.body.age, -1)
+        const age = parseInt(req.body.age)
 
         if (email) {
           const exist_user = await userRepo.getUserByEmail(email)
@@ -106,7 +106,9 @@ export default function(mysqlClient, mailTransporter) {
                   .toString('hex')
                 if (hashedPassword == clientHashedPassword) {
                   const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
-                  res.send({ message: 'Login successfully.', authToken: token })
+                  const data = {}
+                  userProperties.forEach(key => (data[key] = exist_user[key]))
+                  res.send({ message: 'Login successfully.', authToken: token, user: data })
                 } else {
                   res.send({ message: 'Login failed. Check your email and password and try again.' })
                 }

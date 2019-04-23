@@ -25,7 +25,7 @@ export default function(mysqlClient) {
           .toFile(dest)
           .then(() => 'ok')
           .catch(err => {
-            logger.error(err)
+            logger.error(err.stack)
             return 'fail'
           })
       }
@@ -67,10 +67,14 @@ export default function(mysqlClient) {
     { name: 'image2', maxCount: 1 },
     { name: 'image3', maxCount: 1 },
     { name: 'image4', maxCount: 1 },
-    { name: 'image5', maxCount: 1 }
+    { name: 'image5', maxCount: 1 },
+    { name: 'image6', maxCount: 1 }
   ])
 
-  router.use(quickthumb.static(config.uploadDir, { cacheDir: config.tempUploadDir }))
+  router.use(quickthumb.static(path.join(config.uploadDir, 'images'), { cacheDir: config.tempUploadDir }))
+  router.get('*', (req, res) => {
+    res.status(404).send({ message: 'File not found.' })
+  })
 
   router.post('/upload_image', jwtVerifyMiddleware, (req, res) => {
     upload_single(req, res, async err => {
@@ -83,19 +87,18 @@ export default function(mysqlClient) {
         }
         return res.send({ message: err.message })
       } else if (err) {
-        res.sendStatus(500)
-        res.send(err)
+        res.status(500).send(err.message)
       } else {
-        const num = parseInt(req.query.num, -1)
-        if (num > 0) {
-          const user_id = 1
-          const width = 400
-          const height = 400
+        const num = parseInt(req.body.num)
+        if (num > 0 && num <= 6) {
+          const user_id = req.user_id
+          const width = 700
+          const height = 875
           const image = req.file
           const result = await saveImage(image, width, height, `${user_id}_image${num}.jpg`)
           res.send(result)
         } else {
-          res.status(400).send({ message: 'num must be between 1 and 5' })
+          res.status(400).send({ message: 'num must be between 1 and 6' })
         }
       }
     })
@@ -115,19 +118,21 @@ export default function(mysqlClient) {
         res.sendStatus(500).send(err)
       } else {
         const userid = req.user_id
-        const width = 400
-        const height = 400
+        const width = 700
+        const height = 875
         const image1 = req.files.image1 ? req.files.image1[0] : null
         const image2 = req.files.image2 ? req.files.image2[0] : null
         const image3 = req.files.image3 ? req.files.image3[0] : null
         const image4 = req.files.image4 ? req.files.image4[0] : null
         const image5 = req.files.image5 ? req.files.image5[0] : null
+        const image6 = req.files.image5 ? req.files.image6[0] : null
         const result = await Promise.all([
           saveImage(image1, width, height, `${userid}_image1.jpg`),
           saveImage(image2, width, height, `${userid}_image2.jpg`),
           saveImage(image3, width, height, `${userid}_image3.jpg`),
           saveImage(image4, width, height, `${userid}_image4.jpg`),
-          saveImage(image5, width, height, `${userid}_image5.jpg`)
+          saveImage(image5, width, height, `${userid}_image5.jpg`),
+          saveImage(image6, width, height, `${userid}_image6.jpg`)
         ])
         res.send(JSON.stringify(result))
       }
