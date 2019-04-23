@@ -3,7 +3,8 @@ import mysql from 'mysql'
 import path from 'path'
 import nodemailer from 'nodemailer'
 import cookieSession from 'cookie-session'
-
+import http from 'http'
+import socket from 'socket.io'
 import config from './config'
 import createLogger from './utils/createLogger'
 import createApiRouter from './router/api_router'
@@ -19,6 +20,7 @@ const api_router = createApiRouter(pool, mailTransporter)
 const upload_router = createUploadRouter(pool)
 
 const app = express()
+
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.use(express.static(path.join(__dirname, 'static')))
@@ -45,4 +47,15 @@ mailTransporter.verify(error => {
 
 const listener = app.listen(3000, () => {
   logger.info('Listening on port ' + listener.address().port)
+})
+
+const socketListener = http.createServer().listen(8889, () => {
+  logger.info(`WebSocket listening on port ${socketListener.address().port}`)
+})
+const socketServer = socket(socketListener)
+
+socketServer.on('connection', socket => {
+  socket.on('message', () => {
+    logger.info('message from ')
+  })
 })
