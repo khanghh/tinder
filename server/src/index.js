@@ -58,4 +58,14 @@ socketServer.on('connection', socket => {
   socket.on('message', () => {
     logger.info('message from ')
   })
+  socket.on('send_message', mesage => {
+    logger.info(mesage)
+    const msg = JSON.stringify({ sender_id: 2, conversation_id: 1, message: 'I have received message' })
+    socket.emit('receive_message', msg)
+    logger.info(msg)
+  })
+
+  socket.on('disconnect', () => {
+    logger.info('client disconnected')
+  })
 })

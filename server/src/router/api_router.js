@@ -67,7 +67,7 @@ export default function(mysqlClient, mailTransporter) {
               name,
               activateToken
             )
-            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender)
+            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender, age)
             if (result && result.insertId) {
               await mailTransporter.sendMail(mail)
               res.send({ message: 'Registeration successful. Check your email to activate your account.' })
@@ -85,44 +85,39 @@ export default function(mysqlClient, mailTransporter) {
   router.post(
     '/login',
     asyncMiddleware(async (req, res) => {
-      const nonce = req.body.nonce
       res.set('Content-Type', 'application/json')
-      if (!nonce || nonce != cache.get(`nonce_${req.connection.remoteAddress}`)) {
-        res.status(403).send({ message: 'Forbidden.' })
-      } else {
-        const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-        const email = re_email.test(req.body.email) ? req.body.email : null
-        if (email) {
-          const exist_user = await userRepo.getUserByEmail(email)
-          if (exist_user) {
-            if (exist_user.is_active) {
-              if (!exist_user.is_banned) {
-                const clientPassword = req.body.password
-                const password = exist_user.password.split('.')
-                const hashedPassword = password[0]
-                const passwordSalt = password[1]
-                const clientHashedPassword = crypto
-                  .pbkdf2Sync(clientPassword, passwordSalt, 1000, 16, 'sha256')
-                  .toString('hex')
-                if (hashedPassword == clientHashedPassword) {
-                  const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
-                  const data = {}
-                  userProperties.forEach(key => (data[key] = exist_user[key]))
-                  res.send({ message: 'Login successfully.', authToken: token, user: data })
-                } else {
-                  res.send({ message: 'Login failed. Check your email and password and try again.' })
-                }
+      const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+      const email = re_email.test(req.body.email) ? req.body.email : null
+      if (email) {
+        const exist_user = await userRepo.getUserByEmail(email)
+        if (exist_user) {
+          if (exist_user.is_active) {
+            if (!exist_user.is_banned) {
+              const clientPassword = req.body.password
+              const password = exist_user.password.split('.')
+              const hashedPassword = password[0]
+              const passwordSalt = password[1]
+              const clientHashedPassword = crypto
+                .pbkdf2Sync(clientPassword, passwordSalt, 1000, 16, 'sha256')
+                .toString('hex')
+              if (hashedPassword == clientHashedPassword) {
+                const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
+                const data = {}
+                userProperties.forEach(key => (data[key] = exist_user[key]))
+                res.send({ message: 'Login successfully.', authToken: token, user: data })
               } else {
-                res.status(403).send({
-                  message: `Your account has been temporarily suspended because of ${exist_user.ban_reason}`
-                })
+                res.send({ message: 'Login failed. Check your email and password and try again.' })
               }
             } else {
-              res.status(403).send({ message: 'Check your email to activate your account.' })
+              res.status(403).send({
+                message: `Your account has been temporarily suspended because of ${exist_user.ban_reason}`
+              })
             }
           } else {
-            res.status(404).send({ message: 'Account not found.' })
+            res.status(403).send({ message: 'Check your email to activate your account.' })
           }
+        } else {
+          res.status(404).send({ message: 'Account not found.' })
         }
       }
     })

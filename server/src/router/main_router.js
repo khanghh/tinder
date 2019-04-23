@@ -42,6 +42,7 @@ export default function(mysqlClient, mailTransporter) {
         const email = re_email.test(req.body.email) ? req.body.email : null
         const password = req.body.password
         const gender = req.body.gender
+        const age = parseInt(req.body.age)
 
         if (email) {
           const exist_user = await userRepo.getUserByEmail(email)
@@ -49,11 +50,12 @@ export default function(mysqlClient, mailTransporter) {
             res.redirect('/register?error=2')
           } else if (!(gender === 'male' || gender === 'female')) {
             res.redirect('/register?error=3')
+          } else if (age < 1 || age > 100) {
+            res.redirect('/register?error=4')
           } else {
             req.session.nonce = null
             const passwordSalt = crypto.randomBytes(16).toString('hex')
-            const salt_round = 100
-            const hashedPassword = crypto.pbkdf2Sync(password, passwordSalt, salt_round, 16, 'sha256').toString('hex')
+            const hashedPassword = crypto.pbkdf2Sync(password, passwordSalt, 1000, 16, 'sha256').toString('hex')
             const activateToken = cryptoUtils.encrypt(email, config.cryptoKey)
             const mail = await MailComposer.compose_activate_user(
               'Tinder<bf3t02@gmail.com>',
@@ -62,7 +64,7 @@ export default function(mysqlClient, mailTransporter) {
               activateToken
             )
             await mailTransporter.sendMail(mail)
-            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender)
+            const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender, age)
             if (result && result.insertId) {
               res.redirect('/login')
             } else {
@@ -70,7 +72,7 @@ export default function(mysqlClient, mailTransporter) {
             }
           }
         } else {
-          res.redirect('/register?error=4')
+          res.redirect('/register?error=5')
         }
       }
     })
