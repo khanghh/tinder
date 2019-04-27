@@ -63,9 +63,9 @@ export default function(mysqlClient, mailTransporter) {
               name,
               activateToken
             )
-            await mailTransporter.sendMail(mail)
             const result = await userRepo.addUser(name, email, hashedPassword + '.' + passwordSalt, gender, age)
             if (result && result.insertId) {
+              await mailTransporter.sendMail(mail)
               res.redirect('/login')
             } else {
               res.status(500).send({ message: 'Internal server error' })

@@ -10,6 +10,7 @@ import createLogger from './utils/createLogger'
 import createApiRouter from './router/api_router'
 import createUploadRouter from './router/upload_router'
 import createMainRouter from './router/main_router'
+import socket_handler from './socket_handler'
 
 const pool = mysql.createPool(config.mysqlOptions)
 const mailTransporter = nodemailer.createTransport(config.mailerOptions)
@@ -55,17 +56,5 @@ const socketListener = http.createServer().listen(8889, () => {
 const socketServer = socket(socketListener)
 
 socketServer.on('connection', socket => {
-  socket.on('message', () => {
-    logger.info('message from ')
-  })
-  socket.on('send_message', mesage => {
-    logger.info(mesage)
-    const msg = JSON.stringify({ sender_id: 2, conversation_id: 1, message: 'I have received message' })
-    socket.emit('receive_message', msg)
-    logger.info(msg)
-  })
-
-  socket.on('disconnect', () => {
-    logger.info('client disconnected')
-  })
+  socket_handler(socket, pool)
 })

@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ext .js, --ignore-path .gitignore .",
+    "lint": "eslint --ext .js --ignore-path .eslintignore .",
     "dev": "env $(cat .env | xargs) nodemon --exec babel-node src/index.js",
-    "build": "babel src --copy-files --ignore src/static --out-dir build"
+    "build": "babel src --copy-files --ignore ./src/static --out-dir build"
   },
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "quickthumb": "0.0.12",
     "sharp": "^0.22.0",
     "socket.io": "^2.2.0",
-    "socket.io-client": "^2.2.0",
+    "socketio-jwt": "^4.5.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
@@ -52,6 +52,7 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-config-recommended": "^4.0.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "socket.io-client": "^2.2.0"
   }
 }

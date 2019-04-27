@@ -24,6 +24,7 @@
     "no-undef": "error",
     "import/no-nodejs-modules": "off",
     "no-useless-escape": "off",
-    "eqeqeq": "off"
+    "eqeqeq": "off",
+    "no-sync": "off"
   }
 }
