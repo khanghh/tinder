@@ -22,6 +22,12 @@
             <input type="password" class="form-control pleft pright" placeholder="Password" id="inputPassword" name="password">
           </div>
 
+          <div class="form-group">
+            <span class="input-icon pt-1" ><i class="material-icons">cake</i></span>
+            <input type="number" class="form-control pleft" placeholder="Your age" id="inputAge" name="age">
+            <span class="bmd-help pt-1">Please input your age.</span>
+          </div>
+
           <div class="form-group bmd-form-group pt-3">
             <div class="text-light pr-5 label-gender">I am:</div>
             <div class="input-gender">
@@ -42,6 +48,9 @@
               <% } %>
               <% if (error == 3) { %>
                 Please enter a valid gender
+              <% } %>
+              <% if (error == 4) { %>
+                Please enter a valid age.
               <% } %>
               <% if (error == 4) { %>
                 Please enter a valid email address

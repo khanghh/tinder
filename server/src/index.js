@@ -4,20 +4,20 @@ import path from 'path'
 import nodemailer from 'nodemailer'
 import cookieSession from 'cookie-session'
 import http from 'http'
-import socket from 'socket.io'
 import config from './config'
 import createLogger from './utils/createLogger'
 import createApiRouter from './router/api_router'
 import createUploadRouter from './router/upload_router'
 import createMainRouter from './router/main_router'
+import handleSocket from './socket/handleSocket'
 
-const pool = mysql.createPool(config.mysqlOptions)
+const mysqlClient = mysql.createPool(config.mysqlOptions)
 const mailTransporter = nodemailer.createTransport(config.mailerOptions)
 const logger = createLogger('app')
 
-const main_router = createMainRouter(pool, mailTransporter)
-const api_router = createApiRouter(pool, mailTransporter)
-const upload_router = createUploadRouter(pool)
+const main_router = createMainRouter(mysqlClient, mailTransporter)
+const api_router = createApiRouter(mysqlClient, mailTransporter)
+const upload_router = createUploadRouter(mysqlClient)
 
 const app = express()
 
@@ -45,17 +45,11 @@ mailTransporter.verify(error => {
   }
 })
 
-const listener = app.listen(3000, () => {
+const listener = app.listen(80, () => {
   logger.info('Listening on port ' + listener.address().port)
 })
 
 const socketListener = http.createServer().listen(8889, () => {
   logger.info(`WebSocket listening on port ${socketListener.address().port}`)
-})
-const socketServer = socket(socketListener)
-
-socketServer.on('connection', socket => {
-  socket.on('message', () => {
-    logger.info('message from ')
-  })
+  handleSocket(socketListener, mysqlClient, mailTransporter)
 })

@@ -9,7 +9,7 @@ export default function(req, res, next) {
   if (!authorization) {
     return res.status(403).send({
       result: false,
-      message: 'Permission Denied'
+      message: 'Forbidden'
     })
   }
   const token = authorization.split(' ')[1]

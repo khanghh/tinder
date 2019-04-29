@@ -1,18 +1,22 @@
+import config from '../config'
 import createMessageRepo from './MessageRepositoy'
 import mysql from 'mysql'
-const client = mysql.createConnection({
-  host: '167.99.69.92',
-  user: 'root',
-  password: '123456',
-  database: 'test_db'
-})
+
+const client = mysql.createConnection(config.mysqlOptions)
 const messageRepo = createMessageRepo(client)
-test('get user', async () => {
-  const data = await messageRepo.getMessages(10).then(data => {
-    client.end()
-    return data
-  })
-  // eslint-disable-next-line no-console
-  console.log(JSON.stringify(data))
-  // expect(data.).toBe(2)
+
+test('add message', async () => {
+  const data = await messageRepo.addMessage(31, 2, 'test message')
+  expect(data.insertId).toBeGreaterThan(0)
+})
+
+test('get message', async () => {
+  const data = await messageRepo.getMessages(31)
+  expect(data.length).toBeGreaterThan(0)
+})
+
+test('seen message', async () => {
+  const data = await messageRepo.updateSeenMessage(68)
+  expect(data.changedRows).toBeGreaterThan(0)
+  client.end()
 })

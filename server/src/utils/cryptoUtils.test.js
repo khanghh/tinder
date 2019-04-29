@@ -8,6 +8,6 @@ test('encrypt/decrypt text', () => {
   const encrypted = crytoUtils.encrypt(plainText, key)
   const decrypted = crytoUtils.decrypt(encrypted, key)
   // eslint-disable-next-line no-console
-  console.log(encrypted)
+  console.log(key)
   expect(decrypted).toBe(plainText)
 })
