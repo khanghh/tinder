@@ -25,6 +25,7 @@
     "import/no-nodejs-modules": "off",
     "no-useless-escape": "off",
     "eqeqeq": "off",
-    "no-sync": "off"
+    "no-sync": "off",
+    "class-methods-use-this" : "off"
   }
 }

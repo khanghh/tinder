@@ -6,15 +6,17 @@ import jwt from 'jsonwebtoken'
 import config from '../config'
 import cryptoUtils from '../utils/cryptoUtils'
 import createLogger from '../utils/createLogger'
-import MailComposer from '../mail/MailComposer'
+import mailComposer from '../mail/MailComposer'
 import createUserRepo from '../repository/UserRepository'
 import createMessageRepo from '../repository/MessageRepositoy'
 import jwtVerifyMiddleware from '../middleware/jwtVerifyMiddleware'
+import ClientManager from '../socket/ClientManager'
 
 export default function(mysqlClient, mailTransporter) {
   const logger = createLogger('ApiRouter')
   const userRepo = createUserRepo(mysqlClient)
   const messageRepo = createMessageRepo(mysqlClient)
+  const clientManager = ClientManager.getInstance()
   const router = express.Router()
 
   const userProperties = ['id', 'name', 'email', 'phone', 'gender', 'age', 'description']
@@ -61,7 +63,7 @@ export default function(mysqlClient, mailTransporter) {
             const passwordSalt = crypto.randomBytes(16).toString('hex')
             const hashedPassword = crypto.pbkdf2Sync(password, passwordSalt, 1000, 16, 'sha256').toString('hex')
             const activateToken = cryptoUtils.encrypt(email, config.cryptoKey)
-            const mail = await MailComposer.compose_activate_user(
+            const mail = await mailComposer.compose_activate_user(
               'Tinder<bf3t02@gmail.com>',
               email,
               name,
@@ -91,7 +93,7 @@ export default function(mysqlClient, mailTransporter) {
       if (email) {
         const exist_user = await userRepo.getUserByEmail(email)
         if (exist_user) {
-          if (exist_user.is_active) {
+          if (exist_user.is_activate) {
             if (!exist_user.is_banned) {
               const clientPassword = req.body.password
               const password = exist_user.password.split('.')
@@ -106,7 +108,7 @@ export default function(mysqlClient, mailTransporter) {
                 userProperties.forEach(key => (data[key] = exist_user[key]))
                 res.send({ message: 'Login successfully.', authToken: token, user: data })
               } else {
-                res.send({ message: 'Login failed. Check your email and password and try again.' })
+                res.status(401).send({ message: 'Login failed. Check your email and password and try again.' })
               }
             } else {
               res.status(403).send({
@@ -148,6 +150,10 @@ export default function(mysqlClient, mailTransporter) {
     messageRepo.getMessages(conversation_id).then(message => {
       res.send(JSON.stringify(message))
     })
+  })
+
+  router.get('/statistic', (req, res) => {
+    res.send({ online: clientManager.getCount() })
   })
 
   return router

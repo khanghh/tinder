@@ -4,7 +4,8 @@ export default {
     host: process.env.mysqlHost,
     user: process.env.mysqlUser,
     password: process.env.mysqlPassword,
-    database: process.env.mysqlDatabase
+    database: process.env.mysqlDatabase,
+    charset: 'utf8mb4_general_ci'
   },
   mailerOptions: {
     pool: true,

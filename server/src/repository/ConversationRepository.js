@@ -5,13 +5,20 @@ class ConversationRepository {
     this.client = client
   }
 
-  async getConversations(user_id, fields = '*') {
-    const query = `select ${fields} from conversation where creator_id=${user_id} or member_id=${user_id}`
+  async getConversationsByUserId(user_id) {
+    const query = `select * from conversation where creator_id=${user_id} or member_id=${user_id}`
     const client = this.client
-    const data = await toPromise(cb => {
+    return toPromise(cb => {
       client.query(query, cb)
     })
-    return data
+  }
+
+  async addConversation(creator_id, member_id) {
+    const query = `INSERT INTO conversation(creator_id, member_id, is_deleted) VALUES (${creator_id}, ${member_id}, 0)`
+    const client = this.client
+    return toPromise(cb => {
+      client.query(query, cb)
+    })
   }
 }
 
