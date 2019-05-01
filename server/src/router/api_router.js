@@ -144,12 +144,18 @@ export default function(mysqlClient, mailTransporter) {
     }
   })
 
-  router.get('/message', jwtVerifyMiddleware, (req, res) => {
+  router.get('/messages', (req, res) => {
     res.set('Content-Type', 'application/json')
     const conversation_id = req.query.conversation_id
-    messageRepo.getMessages(conversation_id).then(message => {
-      res.send(JSON.stringify(message))
-    })
+    const base_time = req.query.base_time
+    const re_digits = /^\d+$/
+    if (re_digits.test(conversation_id) && re_digits.test(base_time)) {
+      messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
+        res.send(JSON.stringify({ conversation_id, messages: data }))
+      })
+    } else {
+      res.status(400).send('Invalid parameters.')
+    }
   })
 
   router.get('/statistic', (req, res) => {

@@ -16,6 +16,7 @@ export default function(mysqlClient, mailTransporter) {
   const handlePassEvent = UserLikePassHandler(likedRepo, passedRepo, convRepo).handlePassEvent
   const handleChatMessageEvent = ChatHandler(convRepo, msgRepo).handleChatMessageEvent
   const handleChatSeenEvent = ChatHandler(convRepo, msgRepo).handleSeenMesageEvent
+  const handleTypingEvent = ChatHandler(convRepo, msgRepo).handleTypingEvent
 
   const registerNormalEvent = client => {
     const socket = client.socket
@@ -23,7 +24,7 @@ export default function(mysqlClient, mailTransporter) {
     socket.on('pass', msg => handlePassEvent(client, msg))
     socket.on('chat_message', msg => handleChatMessageEvent(client, msg))
     socket.on('chat_seen', msg => handleChatSeenEvent(client, msg))
-    // socket.on('chat_typing', msg => handleChatEvent(client, msg))
+    socket.on('chat_typing', msg => handleTypingEvent(client, msg))
   }
 
   const registerEventHandler = client => {

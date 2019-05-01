@@ -36,8 +36,7 @@ export default (socketListener, mysqlClient, mailTransporter) => {
             const exist_user = await userRepo.getUserByUserId(user_id)
             if (exist_user) {
               logger.info(`user ${user_id} connected.`)
-              const all_conv = await convRepo.getConversations(user_id)
-              logger.info(`user ${user_id}: ${all_conv}`)
+              const all_conv = await convRepo.getConversationsByUserId(user_id)
               const client = new Client(socket, exist_user)
               all_conv.forEach(row => {
                 if (row.creator_id == user_id) {
