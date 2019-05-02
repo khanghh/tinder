@@ -21,7 +21,10 @@ export default (socketListener, mysqlClient, mailTransporter) => {
   const registerEventHandler = client => {
     const socket = client.socket
     const user = client.user
-    socket.on('disconnect', () => logger.info(`user ${user.id} disconnected.`))
+    socket.on('disconnect', () => {
+      clientManager.removeClient(user.id)
+      logger.info(`user ${user.id} disconnected.`)
+    })
     socket.on('error', error => logger.error(`error from ${user.id}: ${error.message} + at ${error.stack}`))
     socketEventHandler.registerEventHandler(client)
   }

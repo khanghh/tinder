@@ -148,14 +148,62 @@ export default function(mysqlClient, mailTransporter) {
     res.set('Content-Type', 'application/json')
     const conversation_id = req.query.conversation_id
     const base_time = req.query.base_time
-    const re_digits = /^\d+$/
-    if (re_digits.test(conversation_id) && re_digits.test(base_time)) {
-      messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
-        res.send(JSON.stringify({ conversation_id, messages: data }))
-      })
+    if (parseInt(conversation_id) > 0) {
+      if (parseInt(base_time) > 0) {
+        messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
+          res.send(JSON.stringify({ conversation_id, messages: data }))
+        })
+      } else {
+        messageRepo.getMessages(conversation_id, new Date().getTime(), 15).then(data => {
+          res.send(JSON.stringify({ conversation_id, messages: data }))
+        })
+      }
     } else {
       res.status(400).send('Invalid parameters.')
     }
+  })
+
+  router.post('/settings', jwtVerifyMiddleware, (req, res) => {
+    const re_phone = /(\+(?:\d{2})|0)\d{9,10}/
+    const re_gender = /^male$|^female$/
+    const name = req.body.name
+    const gender = re_gender.test(req.body.gender) ? req.body.gender : null
+    const age = parseInt(req.body.age)
+    const phone = re_phone.test(req.body.phone) ? req.body.phone : null
+    const description = req.body.description
+    const max_distance = parseInt(req.body.max_distance)
+    const min_age = parseInt(req.body.min_age)
+    const max_age = parseInt(req.body.max_age)
+    const user_id = req.user_id
+
+    res.set('Content-Type', 'application/json')
+    if (req.body.phone && isNaN(phone)) {
+      return res.status(400).send({ message: 'Invalid phone number.' })
+    }
+    if (req.body.age && isNaN(age)) {
+      return res.status(400).send({ message: 'Invalid age.' })
+    }
+    if (req.body.min_age && isNaN(min_age)) {
+      return res.status(400).send({ message: 'Invalid min age.' })
+    }
+    if (req.body.max_age && isNaN(max_age)) {
+      return res.status(400).send({ message: 'Invalid max age.' })
+    }
+    if (req.body.max_distance && isNaN(max_distance)) {
+      return res.status(400).send({ message: 'Invalid max distance.' })
+    }
+    if (req.body.gender && !gender) {
+      return res.status(400).send({ message: 'Invalid gender.' })
+    }
+    return userRepo
+      .updateUserSetting(user_id, name, gender, age, phone, description, max_distance, min_age, max_age)
+      .then(result => {
+        if (result.changedRows > 0) {
+          res.send({ message: 'Settings saved.' })
+        } else {
+          res.status(500).send({ message: 'Internal Server Error' })
+        }
+      })
   })
 
   router.get('/statistic', (req, res) => {
