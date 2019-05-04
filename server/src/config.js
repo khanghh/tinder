@@ -26,5 +26,5 @@ export default {
   tempUploadDir: '/tmp/upload',
   uploadMaxSize: 50 * 1024 * 1024, // 50 MB
   uploadDir: process.env.uploadDir,
-  socketPort: 8888
+  logFile: process.env.logFile
 }

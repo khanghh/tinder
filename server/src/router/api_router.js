@@ -22,7 +22,11 @@ export default function(mysqlClient, mailTransporter) {
   const userProperties = ['id', 'name', 'email', 'phone', 'gender', 'age', 'description']
 
   const asyncMiddleware = fn => (req, res) => {
-    Promise.resolve(fn(req, res)).catch(err => logger.error(err.message + 'at ' + err.stack))
+    Promise.resolve(fn(req, res)).catch(err => {
+      logger.error(err.message + 'at ' + err.stack)
+      res.set('Content-Type', 'application/json')
+      res.status(500).send({ message: 'Internal server error.' })
+    })
   }
 
   router.use(bodyParser.json())
@@ -73,8 +77,6 @@ export default function(mysqlClient, mailTransporter) {
             if (result && result.insertId) {
               await mailTransporter.sendMail(mail)
               res.send({ message: 'Registeration successful. Check your email to activate your account.' })
-            } else {
-              res.status(500).send({ message: 'Internal server error.' })
             }
           }
         } else {
@@ -201,12 +203,8 @@ export default function(mysqlClient, mailTransporter) {
     }
     return userRepo
       .updateUserSetting(user_id, name, gender, age, phone, description, swipe_gender, max_distance, min_age, max_age)
-      .then(result => {
-        if (result.changedRows > 0) {
-          res.send({ message: 'Settings saved.' })
-        } else {
-          res.status(500).send({ message: 'Internal Server Error.' })
-        }
+      .then(() => {
+        res.send({ message: 'Settings saved.' })
       })
   })
 
@@ -214,17 +212,14 @@ export default function(mysqlClient, mailTransporter) {
     res.set('Content-Type', 'application/json')
     const latitude = parseFloat(req.body.latitude)
     const longitude = parseFloat(req.body.longitude)
-    if (!isNaN(longitude) && !isNaN(latitude)) {
-      userRepo.updateLocation(req.user_id, latitude, longitude).then(result => {
-        if (result.changedRows > 0) {
+    if (!isNaN(latitude) && !isNaN(longitude)) {
+      if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180) {
+        return userRepo.updateLocation(req.user_id, latitude, longitude).then(() => {
           res.send({ message: 'ok' })
-        } else {
-          res.status(500).send({ message: 'Internal Server Error.' })
-        }
-      })
-    } else {
-      res.status(400).send({ message: 'Invalid location.' })
+        })
+      }
     }
+    return res.status(400).send({ message: 'Invalid location.' })
   })
 
   router.get(
