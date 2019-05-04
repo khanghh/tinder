@@ -9,17 +9,18 @@ CREATE TABLE IF NOT EXISTS `user` (
   `name` VARCHAR(45) NULL,
   `email` VARCHAR(45) NULL,
   `password` VARCHAR(256) NULL,
-  `gender` tinyint(1) NULL,
+  `gender` TINYINT(1) NULL,
   `age` int(11) NULL,
   `phone` VARCHAR(45) NULL,
   `description` VARCHAR(256) NULL,
   `longitude` DOUBLE,
   `latitude` DOUBLE,
+  `swipe_gender` TINYINT(1) NULL,
   `max_distance` int,
   `min_age` int,
   `max_age` int,
-  `is_activate` tinyint(1) NULL,
-  `is_banned` tinyint(1) NULL,
+  `is_activate` TINYINT(1) NULL,
+  `is_banned` TINYINT(1) NULL,
   `ban_reason` varchar(256) null,
   `exprired_ban` DATETIME,
   `created_at` DATETIME default current_timestamp,
@@ -27,26 +28,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
-create table if not exists `images` (
-	`id` int not null AUTO_INCREMENT,
-    `user_id` int,
-    `path_image` VARCHAR(50) NULL,
-    `created_at` DATETIME default current_timestamp,
-	`updated_at` DATETIME NULL,
-	PRIMARY KEY (`id`),
-    CONSTRAINT `fk_user_id_conversation`
-		FOREIGN KEY (`user_id`)
-		REFERENCES `user` (`id`)
-		ON DELETE CASCADE
-		ON UPDATE NO ACTION
-);
-
 CREATE TABLE IF NOT EXISTS `conversation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `creator_id` INT NOT NULL,
   `member_id` INT NOT NULL,
   `created_at` DATETIME default current_timestamp,
-  `is_deleted` tinyint(1) NULL,
+  `is_deleted` TINYINT(1) NULL,
   `deleted_at` DATETIME NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY(`creator_id`,`member_id`),
@@ -67,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `conversation_id` INT NOT NULL,
   `sender_id` INT NOT NULL,
   `message` VARCHAR(45) CHARACTER SET utf8mb4 NULL,
-  `seen` tinyint(1) NULL,
+  `seen` TINYINT(1) NULL,
   `seen_at` DATETIME NULL,
   `created_at` DATETIME default current_timestamp,
   PRIMARY KEY (`id`, `sender_id`),

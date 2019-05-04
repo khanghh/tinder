@@ -5,7 +5,6 @@ import createLogger from '../utils/createLogger'
 const logger = createLogger('JWT')
 
 export default function(req, res, next) {
-  logger.info(req.headers)
   const authorization = req.headers.authorization
   if (!authorization) {
     return res.status(403).send({
