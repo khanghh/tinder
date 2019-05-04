@@ -144,13 +144,108 @@ export default function(mysqlClient, mailTransporter) {
     }
   })
 
-  router.get('/message', jwtVerifyMiddleware, (req, res) => {
+  router.get('/messages', jwtVerifyMiddleware, (req, res) => {
     res.set('Content-Type', 'application/json')
     const conversation_id = req.query.conversation_id
-    messageRepo.getMessages(conversation_id).then(message => {
-      res.send(JSON.stringify(message))
-    })
+    const base_time = req.query.base_time
+    if (parseInt(conversation_id) > 0) {
+      if (parseInt(base_time) > 0) {
+        messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
+          res.send(JSON.stringify({ conversation_id, messages: data }))
+        })
+      } else {
+        messageRepo.getMessages(conversation_id, new Date().getTime(), 15).then(data => {
+          res.send(JSON.stringify({ conversation_id, messages: data }))
+        })
+      }
+    } else {
+      res.status(400).send({ message: 'Invalid parameters.' })
+    }
   })
+
+  router.post('/settings', jwtVerifyMiddleware, (req, res) => {
+    const re_phone = /(\+(?:\d{2})|0)\d{9,10}/
+    const re_gender = /^male$|^female$/
+    const name = req.body.name
+    const gender = re_gender.test(req.body.gender) ? req.body.gender : null
+    const swipe_gender = re_gender.test(req.body.swipe_gender) ? req.body.swipe_gender : null
+    const age = parseInt(req.body.age)
+    const phone = re_phone.test(req.body.phone) ? req.body.phone : null
+    const description = req.body.description
+    const max_distance = parseInt(req.body.max_distance)
+    const min_age = parseInt(req.body.min_age)
+    const max_age = parseInt(req.body.max_age)
+    const user_id = req.user_id
+
+    res.set('Content-Type', 'application/json')
+    if (req.body.phone && !phone) {
+      return res.status(400).send({ message: 'Invalid phone number.' })
+    }
+    if (req.body.age && isNaN(age)) {
+      return res.status(400).send({ message: 'Invalid age.' })
+    }
+    if (req.body.min_age && isNaN(min_age)) {
+      return res.status(400).send({ message: 'Invalid min age.' })
+    }
+    if (req.body.max_age && isNaN(max_age)) {
+      return res.status(400).send({ message: 'Invalid max age.' })
+    }
+    if (req.body.max_distance && isNaN(max_distance)) {
+      return res.status(400).send({ message: 'Invalid max distance.' })
+    }
+    if (req.body.gender && !gender) {
+      return res.status(400).send({ message: 'Invalid gender.' })
+    }
+    if (req.body.swipe_gender && !swipe_gender) {
+      return res.status(400).send({ message: 'Invalid swipe_gender.' })
+    }
+    return userRepo
+      .updateUserSetting(user_id, name, gender, age, phone, description, swipe_gender, max_distance, min_age, max_age)
+      .then(result => {
+        if (result.changedRows > 0) {
+          res.send({ message: 'Settings saved.' })
+        } else {
+          res.status(500).send({ message: 'Internal Server Error.' })
+        }
+      })
+  })
+
+  router.post('/location', jwtVerifyMiddleware, (req, res) => {
+    res.set('Content-Type', 'application/json')
+    const latitude = parseFloat(req.body.latitude)
+    const longitude = parseFloat(req.body.longitude)
+    if (!isNaN(longitude) && !isNaN(latitude)) {
+      userRepo.updateLocation(req.user_id, latitude, longitude).then(result => {
+        if (result.changedRows > 0) {
+          res.send({ message: 'ok' })
+        } else {
+          res.status(500).send({ message: 'Internal Server Error.' })
+        }
+      })
+    } else {
+      res.status(400).send({ message: 'Invalid location.' })
+    }
+  })
+
+  router.get(
+    '/get_swipes',
+    jwtVerifyMiddleware,
+    asyncMiddleware(async (req, res) => {
+      res.set('Content-Type', 'application/json')
+      const exist_user = await userRepo.getUserByUserId(req.user_id)
+      if (exist_user) {
+        const listSwipe = await userRepo.getSwipeUsers(exist_user, 50)
+        const data = listSwipe.map(user => {
+          const data = {}
+          userProperties.forEach(key => (data[key] = user[key]))
+          return data
+        })
+        res.send(data)
+      } else {
+        res.status(400).send({ message: 'Bad request.' })
+      }
+    })
+  )
 
   router.get('/statistic', (req, res) => {
     res.send({ online: clientManager.getCount() })

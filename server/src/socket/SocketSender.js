@@ -23,7 +23,7 @@ export default {
     socket.emit('match', { conversation_id, user_id, friend_id })
   },
 
-  sendChatMessageRecevie(socket, conversation_id, message_id, is_received) {
+  sendChatMessageResult(socket, conversation_id, message_id, is_received) {
     socket.emit('chat_message_result', { conversation_id, message_id, is_received })
   },
 
@@ -33,5 +33,9 @@ export default {
 
   sendChatMessage(socket, conversation_id, message_id, sender_id, message) {
     socket.emit('chat_message', { conversation_id, message_id, sender_id, message })
+  },
+
+  sendChatTyping(socket, conversation_id, is_typing) {
+    socket.emit('chat_typing', { conversation_id, is_typing })
   }
 }

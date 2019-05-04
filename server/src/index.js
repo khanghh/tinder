@@ -45,7 +45,7 @@ mailTransporter.verify(error => {
   }
 })
 
-const listener = app.listen(80, () => {
+const listener = app.listen(3000, () => {
   logger.info('Listening on port ' + listener.address().port)
 })
 

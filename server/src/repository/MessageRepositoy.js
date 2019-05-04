@@ -5,8 +5,8 @@ class MessageRepository {
     this.client = client
   }
 
-  getMessages(conversation_id) {
-    const query = `select * from messages where conversation_id=${conversation_id} order by created_at`
+  getMessages(conversation_id, time, limit) {
+    const query = `SELECT sender_id, message, UNIX_TIMESTAMP(created_at) as created_at FROM messages WHERE conversation_id=${conversation_id} and UNIX_TIMESTAMP(created_at) < ${time} order by created_at desc limit ${limit}`
     const client = this.client
     return toPromise(cb => {
       client.query(query, cb)
