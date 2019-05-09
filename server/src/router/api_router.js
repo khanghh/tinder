@@ -9,6 +9,7 @@ import createLogger from '../utils/createLogger'
 import mailComposer from '../mail/MailComposer'
 import createUserRepo from '../repository/UserRepository'
 import createMessageRepo from '../repository/MessageRepositoy'
+import createConvRepo from '../repository/ConversationRepository'
 import jwtVerifyMiddleware from '../middleware/jwtVerifyMiddleware'
 import ClientManager from '../socket/ClientManager'
 
@@ -16,10 +17,11 @@ export default function(mysqlClient, mailTransporter) {
   const logger = createLogger('ApiRouter')
   const userRepo = createUserRepo(mysqlClient)
   const messageRepo = createMessageRepo(mysqlClient)
+  const convRepo = createConvRepo(mysqlClient)
   const clientManager = ClientManager.getInstance()
   const router = express.Router()
 
-  const userProperties = ['id', 'name', 'email', 'phone', 'gender', 'age', 'description']
+  const userProperties = ['id', 'name', 'email', 'phone', 'gender', 'age', 'workplace', 'city', 'description']
 
   const asyncMiddleware = fn => (req, res) => {
     Promise.resolve(fn(req, res)).catch(err => {
@@ -27,6 +29,18 @@ export default function(mysqlClient, mailTransporter) {
       res.set('Content-Type', 'application/json')
       res.status(500).send({ message: 'Internal server error.' })
     })
+  }
+
+  const omitProperties = exist_user => {
+    const data = {}
+    userProperties.forEach(key => {
+      if (key == 'gender' || key == 'swipe_gender') {
+        data.key = exist_user[key] ? 'male' : 'female'
+      } else {
+        data[key] = exist_user[key]
+      }
+    })
+    return data
   }
 
   router.use(bodyParser.json())
@@ -92,12 +106,12 @@ export default function(mysqlClient, mailTransporter) {
       res.set('Content-Type', 'application/json')
       const re_email = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
       const email = re_email.test(req.body.email) ? req.body.email : null
-      if (email) {
+      const clientPassword = req.body.password
+      if (email && clientPassword) {
         const exist_user = await userRepo.getUserByEmail(email)
         if (exist_user) {
           if (exist_user.is_activate) {
             if (!exist_user.is_banned) {
-              const clientPassword = req.body.password
               const password = exist_user.password.split('.')
               const hashedPassword = password[0]
               const passwordSalt = password[1]
@@ -106,8 +120,7 @@ export default function(mysqlClient, mailTransporter) {
                 .toString('hex')
               if (hashedPassword == clientHashedPassword) {
                 const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
-                const data = {}
-                userProperties.forEach(key => (data[key] = exist_user[key]))
+                const data = omitProperties(exist_user)
                 res.send({ message: 'Login successfully.', authToken: token, user: data })
               } else {
                 res.status(401).send({ message: 'Login failed. Check your email and password and try again.' })
@@ -123,6 +136,8 @@ export default function(mysqlClient, mailTransporter) {
         } else {
           res.status(404).send({ message: 'Account not found.' })
         }
+      } else {
+        res.status(401).send({ message: 'Please provide email and password.' })
       }
     })
   )
@@ -134,8 +149,7 @@ export default function(mysqlClient, mailTransporter) {
     if (user_id) {
       userRepo.getUserByUserId(user_id).then(user => {
         if (user) {
-          const data = {}
-          userProperties.forEach(key => (data[key] = user[key]))
+          const data = omitProperties(user)
           res.send(JSON.stringify(data))
         } else {
           res.status(404).send({ message: 'User not found.' })
@@ -146,24 +160,49 @@ export default function(mysqlClient, mailTransporter) {
     }
   })
 
-  router.get('/messages', jwtVerifyMiddleware, (req, res) => {
-    res.set('Content-Type', 'application/json')
-    const conversation_id = req.query.conversation_id
-    const base_time = req.query.base_time
-    if (parseInt(conversation_id) > 0) {
-      if (parseInt(base_time) > 0) {
-        messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
-          res.send(JSON.stringify({ conversation_id, messages: data }))
-        })
+  router.get(
+    '/messages',
+    jwtVerifyMiddleware,
+    asyncMiddleware(async (req, res) => {
+      res.set('Content-Type', 'application/json')
+      const conversation_id = req.query.conversation_id
+      const base_time = req.query.base_time || new Date().getTime()
+      const hasConversation = await convRepo.checkHaveConversation(req.user_id, conversation_id)
+      if (hasConversation) {
+        if (parseInt(conversation_id) > 0) {
+          if (parseInt(base_time) > 0) {
+            messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
+              res.send(JSON.stringify({ conversation_id, messages: data }))
+            })
+          } else {
+            res.status(400).send({ message: 'Invalid base time.' })
+          }
+        } else {
+          res.status(400).send({ message: 'Invalid conversation id.' })
+        }
       } else {
-        messageRepo.getMessages(conversation_id, new Date().getTime(), 15).then(data => {
-          res.send(JSON.stringify({ conversation_id, messages: data }))
+        res.status(403).send({ message: 'Forbidden.' })
+      }
+    })
+  )
+
+  router.get(
+    '/conversations',
+    jwtVerifyMiddleware,
+    asyncMiddleware(async (req, res) => {
+      const data = []
+      const all_conv = await convRepo.getConversationsByUserId(req.user_id)
+      for (const conv in all_conv) {
+        const friend_id = conv.creator_id == req.user_id ? conv.member_id : conv.creator_id
+        const friend = await userRepo.getUserByUserId(friend_id)
+        data.push({
+          conversation_id: conv.id,
+          friend: omitProperties(friend)
         })
       }
-    } else {
-      res.status(400).send({ message: 'Invalid parameters.' })
-    }
-  })
+      res.send(data)
+    })
+  )
 
   router.post('/settings', jwtVerifyMiddleware, (req, res) => {
     const re_phone = /(\+(?:\d{2})|0)\d{9,10}/
@@ -212,6 +251,7 @@ export default function(mysqlClient, mailTransporter) {
     res.set('Content-Type', 'application/json')
     const latitude = parseFloat(req.body.latitude)
     const longitude = parseFloat(req.body.longitude)
+    logger.info(`update location: (${latitude}, ${longitude})`)
     if (!isNaN(latitude) && !isNaN(longitude)) {
       if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180) {
         return userRepo.updateLocation(req.user_id, latitude, longitude).then(() => {
@@ -230,11 +270,7 @@ export default function(mysqlClient, mailTransporter) {
       const exist_user = await userRepo.getUserByUserId(req.user_id)
       if (exist_user) {
         const listSwipe = await userRepo.getSwipeUsers(exist_user, 50)
-        const data = listSwipe.map(user => {
-          const data = {}
-          userProperties.forEach(key => (data[key] = user[key]))
-          return data
-        })
+        const data = listSwipe.map(user => omitProperties(user))
         res.send(data)
       } else {
         res.status(400).send({ message: 'Bad request.' })
