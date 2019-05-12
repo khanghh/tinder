@@ -192,7 +192,7 @@ export default function(mysqlClient, mailTransporter) {
     asyncMiddleware(async (req, res) => {
       const data = []
       const all_conv = await convRepo.getConversationsByUserId(req.user_id)
-      for (const conv in all_conv) {
+      for (const conv of all_conv) {
         const friend_id = conv.creator_id == req.user_id ? conv.member_id : conv.creator_id
         const friend = await userRepo.getUserByUserId(friend_id)
         data.push({

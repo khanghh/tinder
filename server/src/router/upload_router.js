@@ -144,6 +144,7 @@ export default function(mysqlClient) {
 
   router.post('/delete_image', jwtVerifyMiddleware, (req, res) => {
     res.setHeader('Content-Type', 'application/json')
+    logger.info(`delete_image: user=${req.user_id}, num=${req.query.num}`)
     const num = parseInt(req.query.num)
     if (num > 0 && num <= 6) {
       const file_name = `${req.user_id}_image${num}.jpg`
