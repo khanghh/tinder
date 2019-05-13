@@ -13,6 +13,7 @@ export default function(req, res, next) {
     })
   }
   const token = authorization.split(' ')[1]
+  logger.info('token: ' + token)
   jwt.verify(token, config.jwtSecret, (err, decoded) => {
     if (err) {
       logger.warn(`${req.connection.remoteAddress} invalid authToken.`)

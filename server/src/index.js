@@ -39,7 +39,7 @@ app.use(
 
 mailTransporter.verify(error => {
   if (error) {
-    logger.error(error)
+    logger.error(error.message)
   } else {
     logger.info(`Mail user ${mailTransporter.options.auth.user} is ready`)
   }

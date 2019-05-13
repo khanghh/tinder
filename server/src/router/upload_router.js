@@ -1,3 +1,4 @@
+import fs from 'fs'
 import express from 'express'
 import createUserRepo from '../repository/UserRepository'
 import config from '../config'
@@ -73,13 +74,14 @@ export default function(mysqlClient) {
 
   router.use(quickthumb.static(path.join(config.uploadDir, 'images'), { cacheDir: config.tempUploadDir }))
   router.get('*', (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
     res.status(404).send({ message: 'File not found.' })
   })
 
   router.post('/upload_image', jwtVerifyMiddleware, (req, res) => {
     upload_single(req, res, async err => {
+      res.setHeader('Content-Type', 'application/json')
       if (err instanceof multer.MulterError) {
-        res.setHeader('Content-Type', 'application/json')
         if (err.code === 'LIMIT_FILE_SIZE') {
           res.status(413)
         } else if (err.code === 'LIMIT_FILE_TYPE') {
@@ -87,16 +89,17 @@ export default function(mysqlClient) {
         }
         return res.send({ message: err.message })
       } else if (err) {
-        res.status(500).send(err.message)
+        res.status(500).send({ message: err.message })
       } else {
         const num = parseInt(req.body.num)
         if (num > 0 && num <= 6) {
+          logger.info(`user ${req.user_id} upload image num: ${num}`)
           const user_id = req.user_id
           const width = 700
           const height = 875
           const image = req.file
           const result = await saveImage(image, width, height, `${user_id}_image${num}.jpg`)
-          res.send(result)
+          res.send({ message: result })
         } else {
           res.status(400).send({ message: 'num must be between 1 and 6' })
         }
@@ -106,8 +109,8 @@ export default function(mysqlClient) {
 
   router.post('/upload_images', jwtVerifyMiddleware, (req, res) => {
     upload_multiple(req, res, async err => {
+      res.setHeader('Content-Type', 'application/json')
       if (err instanceof multer.MulterError) {
-        res.setHeader('Content-Type', 'application/json')
         if (err.code === 'LIMIT_FILE_SIZE') {
           res.status(413)
         } else if (err.code === 'LIMIT_FILE_TYPE') {
@@ -134,9 +137,30 @@ export default function(mysqlClient) {
           saveImage(image5, width, height, `${userid}_image5.jpg`),
           saveImage(image6, width, height, `${userid}_image6.jpg`)
         ])
-        res.send(JSON.stringify(result))
+        res.send({ message: result })
       }
     })
+  })
+
+  router.post('/delete_image', jwtVerifyMiddleware, (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    logger.info(`delete_image: user=${req.user_id}, num=${req.query.num}`)
+    const num = parseInt(req.query.num)
+    if (num > 0 && num <= 6) {
+      const file_name = `${req.user_id}_image${num}.jpg`
+      const srcFile = path.join(config.uploadDir, 'images', `/${file_name}`)
+      const destFile = srcFile + '.deleted'
+      logger.info(srcFile)
+      logger.info(destFile)
+      return fs.rename(srcFile, destFile, err => {
+        if (err) {
+          res.status(500).send({ message: 'fail' })
+        } else {
+          res.send({ message: 'ok' })
+        }
+      })
+    }
+    return res.status(400).send({ message: 'fail' })
   })
 
   return router

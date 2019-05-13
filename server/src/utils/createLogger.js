@@ -1,4 +1,5 @@
 import winston from 'winston'
+import config from '../config'
 
 const createLoger = function(objectName) {
   const myFormat = winston.format.printf(
@@ -19,7 +20,7 @@ const createLoger = function(objectName) {
         format: myFormat
       }),
       new winston.transports.File({
-        filename: 'static/log.txt',
+        filename: config.logFile,
         format: myFormatFile
       })
     ]

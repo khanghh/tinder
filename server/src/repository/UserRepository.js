@@ -23,7 +23,8 @@ class UserRepository {
 
   addUser(name, email, password, gender, age) {
     const bitGender = gender === 'male' ? 1 : 0
-    const query = `INSERT INTO user(name, email, password, gender, age, is_activate, is_banned) VALUES ("${name}", "${email}", "${password}", ${bitGender}, ${age}, 0, 0)`
+    const bitSwipeGender = gender === 'male' ? 0 : 1
+    const query = `INSERT INTO user(name, email, password, gender, age, swipe_gender, is_activate, is_banned) VALUES ("${name}", "${email}", "${password}", ${bitGender}, ${age}, ${bitSwipeGender}, 0, 0)`
     const client = this.client
     return toPromise(cb => {
       client.query(query, cb)

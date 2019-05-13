@@ -13,7 +13,11 @@ export default function(mysqlClient, mailTransporter) {
   const router = express.Router()
 
   const asyncMiddleware = fn => (req, res) => {
-    Promise.resolve(fn(req, res)).catch(err => logger.error(err.message))
+    Promise.resolve(fn(req, res)).catch(err => {
+      logger.error(err.message + 'at ' + err.stack)
+      res.set('Content-Type', 'application/json')
+      res.status(500).send({ message: 'Internal server error.' })
+    })
   }
 
   function gen_nonce() {
@@ -67,8 +71,6 @@ export default function(mysqlClient, mailTransporter) {
             if (result && result.insertId) {
               await mailTransporter.sendMail(mail)
               res.redirect('/login')
-            } else {
-              res.status(500).send({ message: 'Internal server error' })
             }
           }
         } else {
