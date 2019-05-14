@@ -144,8 +144,7 @@ export default function(mysqlClient, mailTransporter) {
 
   router.get('/user_info', jwtVerifyMiddleware, (req, res) => {
     res.set('Content-Type', 'application/json')
-    const re_id = /^\d+$/
-    const user_id = re_id.test(req.query.user_id) ? req.query.user_id : null
+    const user_id = parseInt(req.query.user_id)
     if (user_id) {
       userRepo.getUserByUserId(user_id).then(user => {
         if (user) {
@@ -165,12 +164,12 @@ export default function(mysqlClient, mailTransporter) {
     jwtVerifyMiddleware,
     asyncMiddleware(async (req, res) => {
       res.set('Content-Type', 'application/json')
-      const conversation_id = req.query.conversation_id
-      const base_time = req.query.base_time || new Date().getTime()
-      const hasConversation = await convRepo.checkHaveConversation(req.user_id, conversation_id)
-      if (hasConversation) {
-        if (parseInt(conversation_id) > 0) {
-          if (parseInt(base_time) > 0) {
+      const conversation_id = parseInt(req.query.conversation_id)
+      const base_time = /^\d+$/.test(req.query.base_time) ? parseInt(req.query.base_time) : new Date().getTime()
+      if (conversation_id > 0) {
+        const hasConversation = await convRepo.checkHaveConversation(req.user_id, conversation_id)
+        if (hasConversation) {
+          if (base_time > 0) {
             messageRepo.getMessages(conversation_id, base_time, 15).then(data => {
               res.send(JSON.stringify({ conversation_id, messages: data }))
             })
@@ -178,10 +177,10 @@ export default function(mysqlClient, mailTransporter) {
             res.status(400).send({ message: 'Invalid base time.' })
           }
         } else {
-          res.status(400).send({ message: 'Invalid conversation id.' })
+          res.status(403).send({ message: 'Forbidden.' })
         }
       } else {
-        res.status(403).send({ message: 'Forbidden.' })
+        res.status(400).send({ message: 'Invalid conversation id.' })
       }
     })
   )

@@ -8,7 +8,6 @@ class ConversationRepository {
   getConversationsByUserId(user_id) {
     const query = `select * from conversation where creator_id=${user_id} or member_id=${user_id}`
     const client = this.client
-    console.log(query)
     return toPromise(cb => {
       client.query(query, cb)
     })
