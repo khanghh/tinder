@@ -35,7 +35,7 @@ export default function(mysqlClient, mailTransporter) {
     const data = {}
     userProperties.forEach(key => {
       if (key == 'gender' || key == 'swipe_gender') {
-        data.key = exist_user[key] ? 'male' : 'female'
+        data[key] = exist_user[key] ? 'male' : 'female'
       } else {
         data[key] = exist_user[key]
       }
@@ -211,6 +211,8 @@ export default function(mysqlClient, mailTransporter) {
     const swipe_gender = re_gender.test(req.body.swipe_gender) ? req.body.swipe_gender : null
     const age = parseInt(req.body.age)
     const phone = re_phone.test(req.body.phone) ? req.body.phone : null
+    const workplace = req.body.workplace
+    const city = req.body.city
     const description = req.body.description
     const max_distance = parseInt(req.body.max_distance)
     const min_age = parseInt(req.body.min_age)
@@ -240,7 +242,20 @@ export default function(mysqlClient, mailTransporter) {
       return res.status(400).send({ message: 'Invalid swipe_gender.' })
     }
     return userRepo
-      .updateUserSetting(user_id, name, gender, age, phone, description, swipe_gender, max_distance, min_age, max_age)
+      .updateUserSetting(
+        user_id,
+        name,
+        gender,
+        age,
+        phone,
+        workplace,
+        city,
+        description,
+        swipe_gender,
+        max_distance,
+        min_age,
+        max_age
+      )
       .then(() => {
         res.send({ message: 'Settings saved.' })
       })
