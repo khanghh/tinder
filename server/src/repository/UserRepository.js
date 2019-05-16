@@ -63,16 +63,17 @@ class UserRepository {
   ) {
     const qname = name ? `name="${name}",` : ''
     const qgender = gender ? `gender=${gender == 'male' ? 1 : 0},` : ''
-    const qswipe_gender = gender ? `swipe_gender=${swipe_gender == 'male' ? 1 : 0},` : ''
+    const qswipe_gender = swipe_gender ? `swipe_gender=${swipe_gender == 'male' ? 1 : 0},` : ''
     const qage = age ? `age=${age},` : ''
     const qphone = phone ? `phone="${phone}",` : ''
     const qworkplace = workplace ? `workplace="${workplace}",` : ''
     const qcity = city ? `city="${city}",` : ''
     const qdescription = description ? `description="${description}",` : ''
-    const qmax_distance = max_distance ? `gender=${max_distance},` : ''
+    const qmax_distance = max_distance ? `max_distance=${max_distance},` : ''
     const qmin_age = min_age ? `min_age=${min_age},` : ''
     const qmax_age = max_age ? `max_age=${max_age},` : ''
     const query = `UPDATE user SET ${qname}${qgender}${qage}${qphone}${qworkplace}${qcity}${qdescription}${qswipe_gender}${qmax_distance}${qmin_age}${qmax_age}updated_at=now() WHERE id=${user_id}`
+    console.log(query)
     const client = this.client
     return toPromise(cb => {
       client.query(query, cb)

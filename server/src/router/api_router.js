@@ -121,6 +121,10 @@ export default function(mysqlClient, mailTransporter) {
               if (hashedPassword == clientHashedPassword) {
                 const token = jwt.sign({ user_id: exist_user.id }, config.jwtSecret, { expiresIn: config.jwtMaxAge })
                 const data = omitProperties(exist_user)
+                data.swipe_gender = exist_user.swipe_gender
+                data.min_age = exist_user.min_age
+                data.max_age = exist_user.max_age
+                data.max_distance = exist_user.max_distance
                 res.send({ message: 'Login successfully.', authToken: token, user: data })
               } else {
                 res.status(401).send({ message: 'Login failed. Check your email and password and try again.' })
