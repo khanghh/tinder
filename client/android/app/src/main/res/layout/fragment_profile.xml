@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    tools:context=".profile.ProfileFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/btnToSetting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/gray_button_bg"
+            android:src="@drawable/ic_settings_gray_32dp"
+            app:layout_constraintEnd_toStartOf="@+id/btnToEditInfo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtWorkplace" />
+
+        <ImageButton
+            android:id="@+id/btnToEditInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gray_button_bg"
+            android:foregroundGravity="center"
+            android:src="@drawable/ic_edit_gray_32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btnToSetting"
+            app:layout_constraintTop_toTopOf="@+id/btnToSetting" />
+
+        <TextView
+            android:id="@+id/txtNameAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Douder, 18"
+            android:textColor="@android:color/background_dark"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/imvToUserInfo"
+            app:layout_constraintStart_toStartOf="@+id/imvToUserInfo"
+            app:layout_constraintTop_toBottomOf="@+id/imvToUserInfo" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/imvToUserInfo"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/avatar_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_border_color="#333333"
+            app:riv_border_width="0dp"
+            app:riv_corner_radius="60dp"
+            app:riv_mutate_background="true"
+            app:riv_oval="false"
+            app:riv_tile_mode="clamp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="SETTING"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnToSetting"
+            app:layout_constraintStart_toStartOf="@+id/btnToSetting"
+            app:layout_constraintTop_toBottomOf="@+id/btnToSetting" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="EDIT INFO"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@+id/btnToEditInfo"
+            app:layout_constraintStart_toStartOf="@+id/btnToEditInfo"
+            app:layout_constraintTop_toBottomOf="@+id/btnToEditInfo" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:background="#F5F7FA"
+            app:layout_constraintBottom_toTopOf="@+id/btnMyTinder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+            <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/pgIntroduceSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <it.xabaras.android.viewpagerindicator.widget.ViewPagerIndicator
+                android:id="@+id/introducePagerIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:defaultIndicatorTheme="light"
+                app:itemDividerWidth="8dp" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/txtWorkplace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="Dai hoc bach khoa thanh pho ho chi minh"
+            android:textSize="22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtNameAge" />
+
+        <Button
+            android:id="@+id/btnMyTinder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Tinder Cua Toi"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

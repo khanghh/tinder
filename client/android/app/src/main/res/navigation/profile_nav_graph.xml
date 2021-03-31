@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.tinder.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userInforFragment"
+        android:name="com.example.tinder.userinfor.UserInforFragment"
+        android:label="fragment_user_infor"
+        tools:layout="@layout/fragment_user_infor">
+        <action
+            android:id="@+id/action_userInforFragment_to_editInforFragment"
+            app:destination="@id/editInforFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editInforFragment"
+        android:name="com.example.tinder.editinfor.EditInforFragment"
+        android:label="fragment_edit_infor"
+        tools:layout="@layout/fragment_edit_infor" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.tinder.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_userInforFragment"
+            app:destination="@id/userInforFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_messageChatFragment"
+            app:destination="@id/messageChatFragment"/>
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editInforFragment"
+            app:destination="@id/editInforFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/messageChatFragment"
+        android:name="com.example.tinder.message_box.MessageChatFragment"
+        android:label="fragment_message_chat"
+        tools:layout="@layout/fragment_message_chat">
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.tinder.signup.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.tinder.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+</navigation>

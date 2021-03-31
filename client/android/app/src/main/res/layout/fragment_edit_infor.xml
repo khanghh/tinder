@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".editinfor.EditInforFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@null">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="64dp" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.33" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.66" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/glbtnAvatar3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar2"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/glbtnAvatar3"
+                app:layout_constraintStart_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/guideline10"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar3"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/glbtnAvatar3"
+                app:layout_constraintStart_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toBottomOf="@+id/imgAvatar2"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar4"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/glbtnAvatar3"
+                app:layout_constraintStart_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toBottomOf="@+id/imgAvatar3"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar5"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintStart_toStartOf="@+id/guideline12"
+                app:layout_constraintTop_toBottomOf="@+id/imgAvatar1"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar6"
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="@+id/guideline11"
+                app:layout_constraintTop_toBottomOf="@+id/imgAvatar1"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imgAvatar1"
+                android:layout_width="0dp"
+                android:layout_height="260dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/background_image_edit_infor_2"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline11"
+                app:layout_constraintTop_toTopOf="@+id/guideline10"
+                app:riv_border_color="#F33939"
+                app:riv_border_width="5dp"
+                app:riv_corner_radius="10dp"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="clamp" />
+
+            <TextView
+                android:id="@+id/fdafdsa"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="#F5F5E4"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="Số Điện Thoại"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtWorkplace" />
+
+            <EditText
+                android:id="@+id/txtPhone"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="center_vertical"
+                android:hint="Số điện thoại..."
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fdafdsa" />
+
+            <TextView
+                android:id="@+id/textViewGender"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="#F5F5E4"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="Giới tính"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtPhone" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewGender">
+
+                <RadioButton
+                    android:id="@+id/radMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nam" />
+
+                <RadioButton
+                    android:id="@+id/radFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Nữ" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textViewDecription"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="#F5F5E4"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="Giới Thiệu"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+            <Button
+                android:id="@+id/btnAvatar1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="240dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/guideline10" />
+
+            <Button
+                android:id="@+id/btnAvatar2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar2" />
+
+            <Button
+                android:id="@+id/btnAvatar3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar3" />
+
+            <Button
+                android:id="@+id/btnAvatar4"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar4" />
+
+            <Button
+                android:id="@+id/btnAvatar5"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar5" />
+
+            <Button
+                android:id="@+id/btnAvatar6"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/add_image"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar6" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading1"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar1"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar1"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar1"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar1" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading2"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar2"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar2"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar2"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar2" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading3"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar3"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar3"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar3"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar3" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading4"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar4"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar4"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar4"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar4" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading5"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar5"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar5"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar5"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar5" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/imageLoading6"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:indicatorColor="@color/colorBlueIndicaior"
+                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:layout_constraintBottom_toBottomOf="@+id/imgAvatar6"
+                app:layout_constraintEnd_toEndOf="@+id/imgAvatar6"
+                app:layout_constraintStart_toStartOf="@+id/imgAvatar6"
+                app:layout_constraintTop_toTopOf="@+id/imgAvatar6" />
+
+            <EditText
+                android:id="@+id/txtDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Giới thiệu..."
+                android:inputType="textMultiLine"
+                android:lines="6"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:scrollHorizontally="false"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewDecription" />
+
+            <TextView
+                android:id="@+id/textViewAddress"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="32dp"
+                android:background="#F5F5E4"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="Thành phố"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgAvatar5" />
+
+            <EditText
+                android:id="@+id/txtAddress"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:ems="10"
+                android:hint="Thành Phố..."
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewAddress" />
+
+            <TextView
+                android:id="@+id/textViewWorkPlace"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:background="#F5F5E4"
+                android:text="Nơi làm việc"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtAddress" />
+
+            <EditText
+                android:id="@+id/txtWorkplace"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@null"
+                android:ems="10"
+                android:hint="Nơi làm việc..."
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textViewWorkPlace" />
+
+            <Button
+                android:id="@+id/btnUpdateInfo"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_below="@id/buttonSaveSetting"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/ripple_effect"
+                android:text="Lưu Thay Đổi"
+                android:textColor="#FFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:navigationIcon="?attr/homeAsUpIndicator" />
+
+
+</FrameLayout>
